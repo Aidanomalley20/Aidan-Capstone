@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { login } from "../services/authService";
+import { loginUser } from "../redux/slices/authSlice";
 
-const LoginPage = ({ onLogin }) => {
+const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.auth);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -13,59 +16,80 @@ const LoginPage = ({ onLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await login(formData);
-      console.log("Login successful, token:", response.token);
+    const result = await dispatch(loginUser(formData));
 
-      // Save the token and user info in localStorage
-      localStorage.setItem("token", response.token);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({ username: "testuser", firstName: "John", lastName: "Doe" })
-      );
+    if (result.meta.requestStatus === "fulfilled" && result.payload) {
+      console.log("Login successful:", result.payload);
 
-      onLogin(); // Update the app state
-      setMessage("Login successful!");
-      console.log("Redirecting to home...");
-      navigate("/"); // Redirect to home
-    } catch (error) {
-      console.error(error.response?.data || "Error occurred during login.");
-      setMessage("Login failed. Please check your credentials.");
+      localStorage.setItem("token", result.payload.token || "");
+
+      if (result.payload.user) {
+        localStorage.setItem("user", JSON.stringify(result.payload.user));
+        console.log("Stored user in localStorage:", result.payload.user);
+      } else {
+        console.error("No user data returned from API.");
+      }
+
+      navigate("/");
+    } else {
+      const errorMessage =
+        result.payload?.error || "Login failed. Please check your credentials.";
+      setMessage(errorMessage);
     }
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center text-indigo-600 mb-6">Login</h1>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="backdrop-blur-2xl bg-black/20 border border-gray-400/70 p-8 rounded-xl shadow-xl w-full max-w-md">
+        <h1 className="text-3xl font-extrabold text-center text-white mb-8">
+          Login
+        </h1>
         <form onSubmit={handleSubmit}>
           <input
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder="Email Address"
             value={formData.email}
             onChange={handleInputChange}
-            className="block w-full p-3 mb-4 border rounded-lg"
+            className="block w-full p-4 mb-6 bg-transparent border border-gray-300 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
             required
           />
           <input
             type="password"
             name="password"
             placeholder="Password"
-            autoComplete="current-password" // Fix for autocomplete warning
+            autoComplete="current-password"
             value={formData.password}
             onChange={handleInputChange}
-            className="block w-full p-3 mb-4 border rounded-lg"
+            className="block w-full p-4 mb-6 bg-transparent border border-gray-300 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
             required
           />
           <button
             type="submit"
-            className="w-full bg-indigo-500 text-white py-3 rounded-lg hover:bg-indigo-600 transition"
+            className="w-full py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500 transition"
+            disabled={loading}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-        {message && <p className="text-center mt-4 text-red-500">{message}</p>}
+
+        {message && <p className="text-center mt-4 text-red-400">{message}</p>}
+        {error && (
+          <p className="text-center mt-4 text-red-400">
+            {typeof error === "string"
+              ? error
+              : error?.message || "Login failed. Please try again."}
+          </p>
+        )}
+
+        <div className="mt-8">
+          <button
+            onClick={() => navigate("/register")}
+            className="w-full py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500 transition"
+          >
+            Don’t have an account? Register
+          </button>
+        </div>
       </div>
     </div>
   );

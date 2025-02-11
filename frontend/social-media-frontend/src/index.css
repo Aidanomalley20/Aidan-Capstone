@@ -1,6 +1,11 @@
 @import "tailwindcss";
 
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f9fafb;
-  }
+html, body {
+  height: 100%;
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to bottom, #3a3a3a, #4a4a4a, #5a5a5a);
+  background-size: cover;
+  background-attachment: fixed;
+}

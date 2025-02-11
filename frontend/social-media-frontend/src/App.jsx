@@ -1,30 +1,32 @@
-import React, { useState, useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
+import { useSelector } from "react-redux";
 import AppRoutes from "./routes/AppRoutes";
 import Navbar from "./components/Navbar";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "./redux/slices/authSlice";
+import { useEffect } from "react";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // Check if a token exists in localStorage to determine authentication
-    setIsAuthenticated(!!localStorage.getItem("token"));
-  }, []);
+    const handleUnload = () => {
+      dispatch(logoutUser());
+    };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setIsAuthenticated(false);
-  };
+    window.addEventListener("beforeunload", handleUnload);
 
-  const handleLogin = () => {
-    setIsAuthenticated(true); // Update authentication state
-  };
-
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+    };
+  }, [dispatch]);
   return (
     <BrowserRouter>
-      {isAuthenticated && <Navbar onLogout={handleLogout} />}
-      <AppRoutes isAuthenticated={isAuthenticated} onLogin={handleLogin} />
+      <div className="min-h-screen flex flex-col">
+        {user && <Navbar />}
+        <AppRoutes />
+      </div>
     </BrowserRouter>
   );
 }

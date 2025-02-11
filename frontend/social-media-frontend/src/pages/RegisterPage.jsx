@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { register } from "../services/authService";
+import { registerUser } from "../services/authService";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -17,9 +17,19 @@ const RegisterPage = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // Automatically format phone numbers
     if (name === "phone") {
-      const formattedValue = value.replace(/[^\d]/g, "").replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+      const numericValue = value.replace(/\D/g, "");
+
+      let formattedValue = numericValue;
+      if (numericValue.length >= 4 && numericValue.length <= 6) {
+        formattedValue = `${numericValue.slice(0, 3)}-${numericValue.slice(3)}`;
+      } else if (numericValue.length > 6) {
+        formattedValue = `${numericValue.slice(0, 3)}-${numericValue.slice(
+          3,
+          6
+        )}-${numericValue.slice(6, 10)}`;
+      }
+
       setFormData({ ...formData, [name]: formattedValue });
     } else {
       setFormData({ ...formData, [name]: value });
@@ -29,18 +39,23 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await register(formData);
+      console.log("Submitting registration form:", formData);
+      const response = await registerUser(formData);
+      console.log("Registration successful:", response);
       setMessage("Registration successful! Redirecting to login...");
       setTimeout(() => navigate("/login"), 2000);
     } catch (error) {
+      console.error("Registration failed:", error);
       setMessage("Registration failed. Please try again.");
     }
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center text-indigo-600 mb-6">Register</h1>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="backdrop-blur-2xl bg-black/20 border border-gray-400/70 p-8 rounded-xl shadow-xl w-full max-w-md">
+        <h1 className="text-3xl font-extrabold text-center text-white mb-8">
+          Register
+        </h1>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -48,7 +63,7 @@ const RegisterPage = () => {
             placeholder="First Name"
             value={formData.firstName}
             onChange={handleInputChange}
-            className="block w-full p-3 mb-4 border rounded-lg"
+            className="block w-full p-4 mb-6 bg-transparent border border-gray-300 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
             required
           />
           <input
@@ -57,7 +72,7 @@ const RegisterPage = () => {
             placeholder="Last Name"
             value={formData.lastName}
             onChange={handleInputChange}
-            className="block w-full p-3 mb-4 border rounded-lg"
+            className="block w-full p-4 mb-6 bg-transparent border border-gray-300 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
             required
           />
           <input
@@ -66,7 +81,7 @@ const RegisterPage = () => {
             placeholder="Email"
             value={formData.email}
             onChange={handleInputChange}
-            className="block w-full p-3 mb-4 border rounded-lg"
+            className="block w-full p-4 mb-6 bg-transparent border border-gray-300 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
             required
           />
           <input
@@ -75,7 +90,7 @@ const RegisterPage = () => {
             placeholder="Phone Number"
             value={formData.phone}
             onChange={handleInputChange}
-            className="block w-full p-3 mb-4 border rounded-lg"
+            className="block w-full p-4 mb-6 bg-transparent border border-gray-300 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
             required
           />
           <input
@@ -84,7 +99,7 @@ const RegisterPage = () => {
             placeholder="Username"
             value={formData.username}
             onChange={handleInputChange}
-            className="block w-full p-3 mb-4 border rounded-lg"
+            className="block w-full p-4 mb-6 bg-transparent border border-gray-300 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
             required
           />
           <input
@@ -93,17 +108,26 @@ const RegisterPage = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleInputChange}
-            className="block w-full p-3 mb-4 border rounded-lg"
+            className="block w-full p-4 mb-6 bg-transparent border border-gray-300 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
             required
           />
           <button
             type="submit"
-            className="w-full bg-indigo-500 text-white py-3 rounded-lg hover:bg-indigo-600 transition"
+            className="w-full py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500 transition"
           >
             Register
           </button>
         </form>
-        {message && <p className="text-center mt-4 text-red-500">{message}</p>}
+        {message && <p className="text-center mt-4 text-red-400">{message}</p>}
+
+        <div className="mt-8">
+          <button
+            onClick={() => navigate("/login")}
+            className="w-full py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500 transition"
+          >
+            Back to Login
+          </button>
+        </div>
       </div>
     </div>
   );
