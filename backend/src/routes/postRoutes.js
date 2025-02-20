@@ -7,6 +7,7 @@ const {
   likePost,
   commentOnPost,
   deletePost,
+  getPostsByUser,
 } = require("../controllers/postController");
 
 const { authenticate } = require("../middleware/authMiddleware");
@@ -28,6 +29,7 @@ const router = express.Router();
 router.post("/", authenticate, upload.single("image"), createPost);
 router.get("/", getPosts);
 router.get("/my-posts", authenticate, getMyPosts);
+router.get("/user/:userId", authenticate, getPostsByUser);
 router.get("/:postId", authenticate, getPostById);
 router.post("/:postId/like", authenticate, likePost);
 router.post("/:postId/comments", authenticate, commentOnPost);

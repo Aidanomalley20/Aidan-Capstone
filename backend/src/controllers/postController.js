@@ -128,16 +128,12 @@ exports.likePost = async (req, res) => {
     const updatedPost = await prisma.post.findUnique({
       where: { id: Number(postId) },
       include: {
-        user: { select: { id: true, username: true } },
-        comments: {
-          include: { user: { select: { id: true, username: true } } },
-        },
         likes: { select: { userId: true } },
       },
     });
 
     res.json({
-      ...updatedPost,
+      id: updatedPost.id,
       likedByUser: updatedPost.likes.some((like) => like.userId === userId),
       likes: updatedPost.likes.length,
     });
@@ -187,17 +183,11 @@ exports.deletePost = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    if (!postId || isNaN(postId)) {
-      return res.status(400).json({ error: "Invalid post ID" });
-    }
-
     const post = await prisma.post.findUnique({
       where: { id: Number(postId) },
     });
 
-    if (!post) {
-      return res.status(404).json({ error: "Post not found" });
-    }
+    if (!post) return res.status(404).json({ error: "Post not found" });
 
     if (post.userId !== userId) {
       return res
@@ -205,21 +195,35 @@ exports.deletePost = async (req, res) => {
         .json({ error: "Unauthorized to delete this post" });
     }
 
-    await prisma.comment.deleteMany({
-      where: { postId: Number(postId) },
-    });
-
-    await prisma.like.deleteMany({
-      where: { postId: Number(postId) },
-    });
-
-    await prisma.post.delete({
-      where: { id: Number(postId) },
-    });
+    await prisma.comment.deleteMany({ where: { postId: Number(postId) } });
+    await prisma.like.deleteMany({ where: { postId: Number(postId) } });
+    await prisma.post.delete({ where: { id: Number(postId) } });
 
     res.json({ message: "Post deleted successfully", postId });
   } catch (error) {
     console.error("Failed to delete post:", error);
     res.status(500).json({ error: "Failed to delete post" });
+  }
+};
+exports.getPostsByUser = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const posts = await prisma.post.findMany({
+      where: { userId: Number(userId) },
+      include: {
+        user: { select: { id: true, username: true } },
+        comments: {
+          include: { user: { select: { id: true, username: true } } },
+        },
+        likes: { select: { userId: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    res.json(posts);
+  } catch (error) {
+    console.error("Failed to fetch user's posts:", error);
+    res.status(500).json({ error: "Failed to fetch user's posts" });
   }
 };

@@ -17,6 +17,9 @@ export const loginUser = createAsyncThunk(
         throw new Error("Invalid response from server");
       }
 
+      localStorage.setItem("user", JSON.stringify(response));
+      localStorage.setItem("token", response.token);
+
       return response;
     } catch (error) {
       console.error("Login failed:", error.response?.data || error.message);
@@ -44,15 +47,15 @@ export const registerUser = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
   await apiLogout();
-  sessionStorage.clear();
+  localStorage.removeItem("user");
+  localStorage.removeItem("token");
   return null;
 });
 
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: JSON.parse(sessionStorage.getItem("user")) || null,
-
+    user: JSON.parse(localStorage.getItem("user")) || null,
     loading: false,
     error: null,
   },
@@ -76,5 +79,6 @@ const authSlice = createSlice({
       });
   },
 });
+
 export const { resetAuth } = authSlice.actions;
 export default authSlice.reducer;

@@ -118,7 +118,9 @@ const RegisterPage = () => {
             Register
           </button>
         </form>
-        {message && <p className="text-center mt-4 text-red-400">{message}</p>}
+        {message && (
+          <p className="text-center mt-4 text-green-500">{message}</p>
+        )}
 
         <div className="mt-8">
           <button

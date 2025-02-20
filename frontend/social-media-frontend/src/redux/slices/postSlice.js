@@ -49,21 +49,42 @@ const postSlice = createSlice({
         state.loading = false;
         state.items = [];
       })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.items = state.items.filter((post) => post.id !== action.payload);
+      })
       .addCase(toggleLike.fulfilled, (state, action) => {
-        const updatedPost = action.payload;
+        console.log("✅ Like API Response:", action.payload);
+
         state.items = state.items.map((post) =>
-          post.id === updatedPost.postId
+          post.id === action.payload.id
             ? {
                 ...post,
-                likedByUser: updatedPost.likedByUser,
-                likes: updatedPost.likedByUser
-                  ? post.likes + 1
-                  : post.likes - 1,
+                likedByUser: action.payload.likedByUser,
+                likes: action.payload.likes,
               }
             : post
         );
+
+        console.log("🔥 Updated Redux State:", state.items);
       });
   },
 });
+export const deletePost = createAsyncThunk(
+  "posts/deletePost",
+  async (postId, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return rejectWithValue("No token found, please log in.");
 
+      await api.delete(`/posts/${postId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      return postId;
+    } catch (error) {
+      console.error("Failed to delete post:", error);
+      return rejectWithValue("Failed to delete post");
+    }
+  }
+);
 export default postSlice.reducer;
