@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import FollowersList from "../components/FollowersList";
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState({ followers: 0, following: 0, posts: 0 });
   const [posts, setPosts] = useState([]);
+  const [showFollowers, setShowFollowers] = useState(false);
+  const [showFollowing, setShowFollowing] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -85,11 +88,17 @@ const ProfilePage = () => {
             <h2 className="text-xl font-bold">{stats.posts}</h2>
             <p className="text-gray-300">Posts</p>
           </div>
-          <div className="text-center">
+          <div
+            className="text-center cursor-pointer"
+            onClick={() => setShowFollowers(true)}
+          >
             <h2 className="text-xl font-bold">{stats.followers}</h2>
             <p className="text-gray-300">Followers</p>
           </div>
-          <div className="text-center">
+          <div
+            className="text-center cursor-pointer"
+            onClick={() => setShowFollowing(true)}
+          >
             <h2 className="text-xl font-bold">{stats.following}</h2>
             <p className="text-gray-300">Following</p>
           </div>
@@ -131,6 +140,21 @@ const ProfilePage = () => {
           ))}
         </div>
       </div>
+
+      {showFollowers && (
+        <FollowersList
+          userId={user.id}
+          onClose={() => setShowFollowers(false)}
+        />
+      )}
+
+      {showFollowing && (
+        <FollowersList
+          userId={user.id}
+          onClose={() => setShowFollowing(false)}
+          isFollowing
+        />
+      )}
     </div>
   );
 };
