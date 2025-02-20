@@ -5,13 +5,11 @@ import PostCard from "../components/PostCard";
 
 const HomePage = () => {
   const dispatch = useDispatch();
-  const { items: posts = [], loading } = useSelector((state) => state.posts); 
+  const { items: posts = [], loading } = useSelector((state) => state.posts);
 
   useEffect(() => {
     dispatch(fetchPosts());
   }, [dispatch]);
-
-  console.log("🏠 Homepage Posts (Updated):", posts);
 
   return (
     <div className="min-h-screen flex flex-col items-center text-white">

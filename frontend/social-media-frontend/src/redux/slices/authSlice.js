@@ -17,8 +17,8 @@ export const loginUser = createAsyncThunk(
         throw new Error("Invalid response from server");
       }
 
-      localStorage.setItem("user", JSON.stringify(response));
-      localStorage.setItem("token", response.token);
+      sessionStorage.setItem("user", JSON.stringify(response));
+      sessionStorage.setItem("token", response.token);
 
       return response;
     } catch (error) {
@@ -55,7 +55,9 @@ export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: JSON.parse(localStorage.getItem("user")) || null,
+    user: sessionStorage.getItem("user")
+      ? JSON.parse(sessionStorage.getItem("user"))
+      : null,
     loading: false,
     error: null,
   },

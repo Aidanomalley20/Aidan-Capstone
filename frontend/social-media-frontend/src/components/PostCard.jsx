@@ -26,13 +26,13 @@ const PostCard = ({ post }) => {
     useSelector((state) => state.posts.items.find((p) => p.id === post.id)) ||
     post;
 
-  console.log("🔄 PostCard Updated State:", updatedPost);
+  
 
   const handleLike = () => {
     setLiked(!liked);
     setLikeCount(liked ? likeCount - 1 : likeCount + 1);
     dispatch(toggleLike(post.id));
-    console.log("❤️ Like Button Clicked for Post:", post.id);
+    
   };
 
   const handleDelete = () => {
