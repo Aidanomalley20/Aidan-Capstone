@@ -6,6 +6,11 @@ exports.getUserProfile = async (req, res) => {
   const { userId } = req.params;
   const currentUserId = req.user?.id;
 
+  if (!userId || isNaN(userId)) {
+    console.error("Invalid user ID:", userId);
+    return res.status(400).json({ error: "Invalid user ID" });
+  }
+
   try {
     const user = await prisma.user.findUnique({
       where: { id: Number(userId) },
@@ -19,15 +24,18 @@ exports.getUserProfile = async (req, res) => {
       },
     });
 
-    if (!user) return res.status(404).json({ error: "User not found" });
+    if (!user) {
+      console.error(`User with ID ${userId} not found.`);
+      return res.status(404).json({ error: "User not found" });
+    }
 
     const isFollowing = await prisma.follow.findFirst({
-      where: { followerId: currentUserId, followingId: Number(userId) },
+      where: { followerId: Number(currentUserId), followingId: Number(userId) },
     });
 
     res.json({ ...user, isFollowing: !!isFollowing });
   } catch (error) {
-    console.error("Failed to fetch user:", error);
+    console.error("❌ Failed to fetch user profile:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -110,5 +118,40 @@ exports.getFollowing = async (req, res) => {
   } catch (error) {
     console.error("Failed to fetch following:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+};
+exports.searchUsers = async (req, res) => {
+  const { query } = req.query;
+
+  if (!query || query.trim() === "") {
+    return res.status(400).json({ error: "Search query is required" });
+  }
+
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { username: { contains: query, mode: "insensitive" } },
+          { firstName: { contains: query, mode: "insensitive" } },
+          { lastName: { contains: query, mode: "insensitive" } },
+        ],
+      },
+      select: {
+        id: true,
+        username: true,
+        firstName: true,
+        lastName: true,
+        profilePicture: true,
+      },
+    });
+
+    if (!users.length) {
+      return res.status(404).json({ error: "No users found" });
+    }
+
+    res.json(users);
+  } catch (error) {
+    console.error("Search error:", error);
+    res.status(500).json({ error: "Failed to search users" });
   }
 };

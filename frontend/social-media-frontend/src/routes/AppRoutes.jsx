@@ -8,6 +8,7 @@ import SettingsPage from "../pages/SettingsPage";
 import CreatePost from "../pages/CreatePost";
 import PostDetailPage from "../pages/PostDetailPage";
 import UserProfilePage from "../pages/UserProfilePage";
+import SearchPage from "../pages/SearchPage";
 
 const AppRoutes = () => {
   const { user } = useSelector((state) => state.auth);
@@ -29,6 +30,8 @@ const AppRoutes = () => {
           <Route path="/create-post" element={<CreatePost />} />
           <Route path="/post/:postId" element={<PostDetailPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />{" "}
+          <Route path="/search" element={<SearchPage />} />
+
         </>
       )}
     </Routes>
