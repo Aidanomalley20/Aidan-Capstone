@@ -22,6 +22,8 @@ model User {
   comments       Comment[] 
   followers      Follow[]  @relation("FollowerRelations")
   following      Follow[]  @relation("FollowingRelations")
+  sentMessages   Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
   createdAt      DateTime  @default(now())
 }
 
@@ -65,4 +67,12 @@ model Comment {
   user      User     @relation(fields: [userId], references: [id]) 
   createdAt DateTime @default(now())
 }
-
+model Message {
+  id          Int      @id @default(autoincrement())
+  senderId    Int
+  receiverId  Int
+  sender      User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  content     String
+  createdAt   DateTime @default(now())
+}
