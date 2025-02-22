@@ -33,9 +33,15 @@ exports.getUserProfile = async (req, res) => {
       where: { followerId: Number(currentUserId), followingId: Number(userId) },
     });
 
-    res.json({ ...user, isFollowing: !!isFollowing });
+    res.json({
+      ...user,
+      isFollowing: !!isFollowing,
+      profilePicture: user.profilePicture
+        ? `/uploads/${user.profilePicture.replace("uploads/", "")}`
+        : null, 
+    });
   } catch (error) {
-    console.error("❌ Failed to fetch user profile:", error);
+    console.error("Failed to fetch user profile:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -121,13 +127,12 @@ exports.getFollowing = async (req, res) => {
   }
 };
 exports.searchUsers = async (req, res) => {
-  const { query } = req.query;
-
-  if (!query || query.trim() === "") {
-    return res.status(400).json({ error: "Search query is required" });
-  }
-
   try {
+    const query = req.query.query;
+    if (!query) {
+      return res.status(400).json({ error: "Search query is required." });
+    }
+
     const users = await prisma.user.findMany({
       where: {
         OR: [
@@ -136,22 +141,13 @@ exports.searchUsers = async (req, res) => {
           { lastName: { contains: query, mode: "insensitive" } },
         ],
       },
-      select: {
-        id: true,
-        username: true,
-        firstName: true,
-        lastName: true,
-        profilePicture: true,
-      },
+      select: { id: true, username: true, profilePicture: true },
     });
 
-    if (!users.length) {
-      return res.status(404).json({ error: "No users found" });
-    }
-
+    console.log("Backend Search Results:", users); 
     res.json(users);
   } catch (error) {
-    console.error("Search error:", error);
+    console.error("Error searching users:", error);
     res.status(500).json({ error: "Failed to search users" });
   }
 };

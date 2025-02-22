@@ -9,6 +9,9 @@ import CreatePost from "../pages/CreatePost";
 import PostDetailPage from "../pages/PostDetailPage";
 import UserProfilePage from "../pages/UserProfilePage";
 import SearchPage from "../pages/SearchPage";
+import MessagesListPage from "../pages/MessagesListPage";
+import MessagesPage from "../pages/MessagesPage";
+import NotificationsPage from "../pages/NotificationsPage";
 
 const AppRoutes = () => {
   const { user } = useSelector((state) => state.auth);
@@ -26,6 +29,9 @@ const AppRoutes = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />{" "}
           <Route path="/profile/:userId" element={<UserProfilePage />} />{" "}
+          <Route path="/messages" element={<MessagesListPage />} />
+          <Route path="/messages/:otherUserId" element={<MessagesPage />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/create-post" element={<CreatePost />} />
           <Route path="/post/:postId" element={<PostDetailPage />} />

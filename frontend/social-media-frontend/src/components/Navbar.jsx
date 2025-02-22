@@ -1,4 +1,6 @@
 import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   AiOutlineHome,
   AiOutlineSearch,
@@ -6,8 +8,44 @@ import {
   AiOutlineBell,
   AiOutlineUser,
 } from "react-icons/ai";
+import { fetchNotifications } from "../redux/slices/notificationsSlice";
+import { fetchConversations } from "../redux/slices/messagesSlice";
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const { notifications } = useSelector((state) => state.notifications);
+  const { conversations } = useSelector((state) => state.messages);
+  const { token } = useSelector((state) => state.auth);
+
+  const [unreadMessages, setUnreadMessages] = useState(0);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchNotifications());
+      dispatch(fetchConversations());
+    }
+  }, [dispatch, token]);
+
+  useEffect(() => {
+    if (Array.isArray(notifications)) {
+      const unread = notifications.filter(
+        (notification) => !notification.read
+      ).length;
+      setUnreadNotifications(unread);
+    } else {
+      setUnreadNotifications(0);
+    }
+  }, [notifications]);
+
+  useEffect(() => {
+    if (Array.isArray(conversations)) {
+      setUnreadMessages(conversations.length);
+    } else {
+      setUnreadMessages(0);
+    }
+  }, [conversations]);
+
   return (
     <>
       <nav className="bg-white shadow-md fixed top-0 w-full z-50">
@@ -19,21 +57,13 @@ const Navbar = () => {
           <div className="flex space-x-8 text-gray-600 text-3xl">
             <NavLink to="/" className="relative group hover:text-indigo-600">
               <AiOutlineHome />
-              <span className="absolute -bottom-7 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
-                Home
-              </span>
             </NavLink>
 
             <NavLink
               to="/search"
-              end
               className="relative group hover:text-indigo-600"
-              onClick={() => console.log("PSearch link clicked!")}
             >
               <AiOutlineSearch />
-              <span className="absolute -bottom-7 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
-                Search
-              </span>
             </NavLink>
 
             <NavLink
@@ -41,9 +71,11 @@ const Navbar = () => {
               className="relative group hover:text-indigo-600"
             >
               <AiOutlineMessage />
-              <span className="absolute -bottom-7 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
-                Messages
-              </span>
+              {unreadMessages > 0 && (
+                <span className="absolute -top-1 -right-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                  {unreadMessages}
+                </span>
+              )}
             </NavLink>
 
             <NavLink
@@ -51,21 +83,18 @@ const Navbar = () => {
               className="relative group hover:text-indigo-600"
             >
               <AiOutlineBell />
-              <span className="absolute -bottom-7 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
-                Notifications
-              </span>
+              {unreadNotifications > 0 && (
+                <span className="absolute -top-1 -right-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                  {unreadNotifications}
+                </span>
+              )}
             </NavLink>
 
             <NavLink
               to="/profile"
-              end
               className="relative group hover:text-indigo-600"
-              onClick={() => console.log("Profile link clicked!")}
             >
               <AiOutlineUser />
-              <span className="absolute -bottom-7 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
-                Profile
-              </span>
             </NavLink>
           </div>
         </div>

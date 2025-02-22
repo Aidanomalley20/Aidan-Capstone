@@ -17,14 +17,21 @@ model User {
   password       String
   bio            String?
   profilePicture String?
-  posts          Post[]    
-  likes          Like[]    
-  comments       Comment[] 
+  posts          Post[]
+  likes          Like[]
+  comments       Comment[]
   followers      Follow[]  @relation("FollowerRelations")
   following      Follow[]  @relation("FollowingRelations")
-  sentMessages   Message[] @relation("SentMessages")
-  receivedMessages Message[] @relation("ReceivedMessages")
-  createdAt      DateTime  @default(now())
+
+  // Messages
+  sentMessages     Message[] @relation("SenderRelation")
+  receivedMessages Message[] @relation("ReceiverRelation")
+
+  // Notifications
+  sentNotifications     Notification[] @relation("SenderNotificationRelation")
+  receivedNotifications Notification[] @relation("RecipientNotificationRelation")
+
+  createdAt DateTime @default(now())
 }
 
 model Post {
@@ -33,8 +40,8 @@ model Post {
   user      User      @relation(fields: [userId], references: [id])
   content   String
   image     String?
-  likes     Like[]    
-  comments  Comment[] 
+  likes     Like[]
+  comments  Comment[]
   createdAt DateTime  @default(now())
 }
 
@@ -42,20 +49,20 @@ model Like {
   id        Int      @id @default(autoincrement())
   postId    Int
   userId    Int
-  post      Post     @relation(fields: [postId], references: [id]) 
-  user      User     @relation(fields: [userId], references: [id]) 
+  post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 }
 
 model Follow {
-  id           Int  @id @default(autoincrement())
-  followerId   Int
-  followingId  Int
-  follower     User @relation("FollowerRelations", fields: [followerId], references: [id])
-  following    User @relation("FollowingRelations", fields: [followingId], references: [id])
-  createdAt    DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  followerId  Int
+  followingId Int
+  follower    User     @relation("FollowerRelations", fields: [followerId], references: [id])
+  following   User     @relation("FollowingRelations", fields: [followingId], references: [id])
+  createdAt   DateTime @default(now())
 
-  @@unique([followerId, followingId]) 
+  @@unique([followerId, followingId])
 }
 
 model Comment {
@@ -64,15 +71,29 @@ model Comment {
   postId    Int
   userId    Int
   post      Post     @relation(fields: [postId], references: [id])
-  user      User     @relation(fields: [userId], references: [id]) 
+  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 }
+
 model Message {
+  id         Int      @id @default(autoincrement())
+  senderId   Int
+  receiverId Int
+  sender     User     @relation(fields: [senderId], references: [id], name: "SenderRelation")
+  receiver   User     @relation(fields: [receiverId], references: [id], name: "ReceiverRelation")
+  content    String
+  createdAt  DateTime @default(now())
+}
+
+model Notification {
   id          Int      @id @default(autoincrement())
-  senderId    Int
-  receiverId  Int
-  sender      User     @relation("SentMessages", fields: [senderId], references: [id])
-  receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
-  content     String
+  recipientId Int
+  senderId    Int?
+  type        String // "like", "follow"
+  postId      Int? // Optional for "like" notifications
+  read        Boolean  @default(false)
   createdAt   DateTime @default(now())
+
+  recipient User  @relation(fields: [recipientId], references: [id], name: "RecipientNotificationRelation")
+  sender    User? @relation(fields: [senderId], references: [id], name: "SenderNotificationRelation")
 }
