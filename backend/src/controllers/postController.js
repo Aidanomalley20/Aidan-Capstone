@@ -113,6 +113,15 @@ exports.likePost = async (req, res) => {
       return res.status(400).json({ error: "Invalid post ID" });
     }
 
+    const post = await prisma.post.findUnique({
+      where: { id: Number(postId) },
+      include: { user: true },
+    });
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
     const existingLike = await prisma.like.findFirst({
       where: { postId: Number(postId), userId: userId },
     });
@@ -123,6 +132,17 @@ exports.likePost = async (req, res) => {
       await prisma.like.create({
         data: { postId: Number(postId), userId: userId },
       });
+
+      if (post.userId !== userId) {
+        await prisma.notification.create({
+          data: {
+            recipientId: post.userId,
+            senderId: userId,
+            type: "like",
+            postId: post.id,
+          },
+        });
+      }
     }
 
     const updatedPost = await prisma.post.findUnique({
@@ -155,6 +175,7 @@ exports.commentOnPost = async (req, res) => {
   try {
     const post = await prisma.post.findUnique({
       where: { id: Number(postId) },
+      include: { user: true },
     });
 
     if (!post) {
@@ -171,6 +192,17 @@ exports.commentOnPost = async (req, res) => {
         user: { select: { id: true, username: true } },
       },
     });
+
+    if (post.userId !== userId) {
+      await prisma.notification.create({
+        data: {
+          recipientId: post.userId,
+          senderId: userId,
+          type: "comment",
+          postId: post.id,
+        },
+      });
+    }
 
     res.status(201).json(comment);
   } catch (error) {

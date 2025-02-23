@@ -89,9 +89,10 @@ model Notification {
   id          Int      @id @default(autoincrement())
   recipientId Int
   senderId    Int?
-  type        String // "like", "follow"
-  postId      Int? // Optional for "like" notifications
-  read        Boolean  @default(false)
+  type        String // "like", "follow", "comment", "message"
+  postId      Int?    // Optional for "like" or "comment" notifications
+  messageId   Int?    // Optional for "message" notifications
+  read        Boolean @default(false)
   createdAt   DateTime @default(now())
 
   recipient User  @relation(fields: [recipientId], references: [id], name: "RecipientNotificationRelation")

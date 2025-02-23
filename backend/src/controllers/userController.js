@@ -38,7 +38,7 @@ exports.getUserProfile = async (req, res) => {
       isFollowing: !!isFollowing,
       profilePicture: user.profilePicture
         ? `/uploads/${user.profilePicture.replace("uploads/", "")}`
-        : null, 
+        : null,
     });
   } catch (error) {
     console.error("Failed to fetch user profile:", error);
@@ -87,6 +87,15 @@ exports.followUser = async (req, res) => {
       await prisma.follow.create({
         data: { followerId: currentUserId, followingId: Number(userId) },
       });
+
+      await prisma.notification.create({
+        data: {
+          recipientId: Number(userId),
+          senderId: currentUserId,
+          type: "follow",
+        },
+      });
+
       return res.json({ message: "Followed user", isFollowing: true });
     }
   } catch (error) {
@@ -144,7 +153,7 @@ exports.searchUsers = async (req, res) => {
       select: { id: true, username: true, profilePicture: true },
     });
 
-    console.log("Backend Search Results:", users); 
+    console.log("Backend Search Results:", users);
     res.json(users);
   } catch (error) {
     console.error("Error searching users:", error);

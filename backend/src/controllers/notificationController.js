@@ -4,11 +4,22 @@ const prisma = new PrismaClient();
 exports.getNotifications = async (req, res) => {
   try {
     const recipientId = req.user.id;
+    console.log("🔍 Logged-in User ID:", recipientId);
+
+    const allNotifications = await prisma.notification.findMany();
+    console.log("📩 ALL Notifications in DB:", allNotifications);
+
     const notifications = await prisma.notification.findMany({
       where: { recipientId },
       orderBy: { createdAt: "desc" },
+      include: {
+        sender: {
+          select: { id: true, username: true, profilePicture: true },
+        },
+      },
     });
 
+    console.log("✅ Fetched Notifications:", notifications);
     res.json(notifications);
   } catch (error) {
     console.error("Error fetching notifications:", error);
@@ -31,17 +42,24 @@ exports.markNotificationRead = async (req, res) => {
   }
 };
 
-
 exports.createNotification = async (req, res) => {
   try {
-    const { recipientId, senderId, type, postId } = req.body;
+    const { recipientId, senderId, type, postId, messageId } = req.body;
 
     if (!recipientId || !type) {
-      return res.status(400).json({ error: "Recipient ID and type are required." });
+      return res
+        .status(400)
+        .json({ error: "Recipient ID and type are required." });
     }
 
     const notification = await prisma.notification.create({
-      data: { recipientId, senderId, type, postId },
+      data: {
+        recipientId,
+        senderId,
+        type,
+        postId,
+        messageId,
+      },
     });
 
     res.status(201).json(notification);
