@@ -67,6 +67,24 @@ const MessagesListPage = () => {
       setLoading(false);
     }
   };
+  const handleDeleteConversation = async (conversationId) => {
+    if (!window.confirm("Are you sure you want to delete this conversation?")) {
+      return;
+    }
+
+    try {
+      await axios.delete(`/api/messages/${conversationId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setConversations((prevConversations) =>
+        prevConversations.filter((conv) => conv.id !== conversationId)
+      );
+    } catch (error) {
+      console.error("❌ Error deleting conversation:", error);
+      alert("Failed to delete conversation.");
+    }
+  };
 
   return (
     <div className="min-h-screen p-4 bg-gray-100">
@@ -91,28 +109,50 @@ const MessagesListPage = () => {
       {loading && <p>Searching...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
+      {loading && <p>Searching...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      {loading && <p>Searching...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      {loading && <p>Searching...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
       {searchResults.length > 0 && (
         <div className="bg-white p-4 rounded-lg shadow-md mb-4">
           <h3 className="text-lg font-semibold mb-2">Search Results</h3>
           {searchResults.map((user) => (
-            <Link
+            <div
               key={user.id}
-              to={`/messages/${user.id}`}
-              className="flex items-center p-3 border-b hover:bg-gray-200"
+              className="flex items-center justify-between p-3 border-b hover:bg-gray-200"
             >
-              <img
-                src={
-                  user.profilePicture
-                    ? `http://localhost:5000${user.profilePicture}`
-                    : "/default-avatar.png"
-                }
-                onError={(e) => (e.target.src = "/default-avatar.png")}
-                alt={user.username}
-                className="w-10 h-10 rounded-full object-cover mr-3"
-              />
+              <Link
+                to={`/messages/${user.id}`}
+                className="flex items-center w-full"
+              >
+                {user.profilePicture ? (
+                  <img
+                    src={`http://localhost:5000${user.profilePicture}`}
+                    onError={(e) => {
+                      console.error("❌ Image failed to load:", e.target.src);
+                      e.target.src = "/default-avatar.png";
+                    }}
+                    alt={user.username}
+                    className="w-10 h-10 rounded-full object-cover mr-3"
+                  />
+                ) : (
+                  <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-700 font-bold rounded-full">
+                    {user.firstName
+                      ? user.firstName[0].toUpperCase()
+                      : user.username
+                      ? user.username[0].toUpperCase()
+                      : "?"}
+                  </div>
+                )}
 
-              <p className="text-lg">@{user.username}</p>
-            </Link>
+                <p className="text-lg">@{user.username}</p>
+              </Link>
+            </div>
           ))}
         </div>
       )}
@@ -123,29 +163,40 @@ const MessagesListPage = () => {
           <p>No conversations yet.</p>
         ) : (
           conversations.map((conv) => (
-            <Link
+            <div
               key={conv.id}
-              to={`/messages/${conv.id}`}
-              className="flex items-center p-3 border-b hover:bg-gray-200"
+              className="flex items-center justify-between p-3 border-b hover:bg-gray-200"
             >
-              {conv.profilePicture ? (
-                <img
-                  src={conv.profilePicture}
-                  onError={(e) => {
-                    console.error("❌ Image failed to load:", e.target.src);
-                    e.target.src = "/default-avatar.png";
-                  }}
-                  alt={conv.username}
-                  className="w-10 h-10 rounded-full object-cover mr-3"
-                />
-              ) : (
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-700 font-bold rounded-full">
-                  {conv.firstName ? conv.firstName[0].toUpperCase() : "?"}
-                </div>
-              )}
+              <Link
+                to={`/messages/${conv.id}`}
+                className="flex items-center w-full"
+              >
+                {conv.profilePicture ? (
+                  <img
+                    src={conv.profilePicture}
+                    onError={(e) => {
+                      console.error("❌ Image failed to load:", e.target.src);
+                      e.target.src = "/default-avatar.png";
+                    }}
+                    alt={conv.username}
+                    className="w-10 h-10 rounded-full object-cover mr-3"
+                  />
+                ) : (
+                  <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-700 font-bold rounded-full">
+                    {conv.firstName ? conv.firstName[0].toUpperCase() : "?"}
+                  </div>
+                )}
 
-              <p className="text-lg">@{conv.username}</p>
-            </Link>
+                <p className="text-lg">@{conv.username}</p>
+              </Link>
+
+              <button
+                onClick={() => handleDeleteConversation(conv.id)}
+                className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
           ))
         )}
       </div>
