@@ -50,8 +50,8 @@ const Navbar = () => {
     <>
       <nav className="bg-white shadow-md fixed top-0 w-full z-50">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-indigo-600">
-            <NavLink to="/">SocialApp</NavLink>
+          <h1 className="text-5xl font-light bg-gradient-to-r from-gray-400 via-gray-500 to-gray-600 bg-clip-text text-transparent tracking-wide">
+            <NavLink to="/">Flow</NavLink>
           </h1>
 
           <div className="flex space-x-8 text-gray-600 text-3xl">
