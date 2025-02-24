@@ -16,14 +16,9 @@ export const fetchNotifications = createAsyncThunk(
         auth: { token },
       } = getState();
 
-      console.log("Fetching notifications...");
-      console.log("Token being used:", token);
-
       const response = await axios.get("/api/notifications", {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      console.log("Notifications API Response:", response.data);
 
       return response.data || [];
     } catch (error) {

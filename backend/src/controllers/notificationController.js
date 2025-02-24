@@ -4,10 +4,8 @@ const prisma = new PrismaClient();
 exports.getNotifications = async (req, res) => {
   try {
     const recipientId = req.user.id;
-    console.log("🔍 Logged-in User ID:", recipientId);
 
     const allNotifications = await prisma.notification.findMany();
-    console.log("📩 ALL Notifications in DB:", allNotifications);
 
     const notifications = await prisma.notification.findMany({
       where: { recipientId },
@@ -19,7 +17,6 @@ exports.getNotifications = async (req, res) => {
       },
     });
 
-    console.log("✅ Fetched Notifications:", notifications);
     res.json(notifications);
   } catch (error) {
     console.error("Error fetching notifications:", error);

@@ -23,8 +23,6 @@ const PostDetailPage = () => {
     }
   }, [post, dispatch]);
 
-  console.log("📝 PostDetailPage Post (Updated):", post);
-
   if (!post) return <div>Loading...</div>;
 
   return (

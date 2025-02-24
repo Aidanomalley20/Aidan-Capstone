@@ -153,7 +153,6 @@ exports.searchUsers = async (req, res) => {
       select: { id: true, username: true, profilePicture: true },
     });
 
-    console.log("Backend Search Results:", users);
     res.json(users);
   } catch (error) {
     console.error("Error searching users:", error);

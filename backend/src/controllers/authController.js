@@ -149,10 +149,8 @@ exports.updateProfile = async (req, res) => {
     if (bio) updateData.bio = bio;
 
     if (password && password.trim() !== "") {
-      console.log("🔄 Hashing new password...");
       const hashedPassword = await bcrypt.hash(password, 10);
       updateData.password = hashedPassword;
-      console.log("✅ NEW Hashed Password:", hashedPassword);
     }
 
     if (req.file) {
@@ -217,7 +215,8 @@ exports.getUserById = async (req, res) => {
 exports.searchUsers = async (req, res) => {
   try {
     const { query } = req.query;
-    if (!query) return res.status(400).json({ error: "Query parameter is required" });
+    if (!query)
+      return res.status(400).json({ error: "Query parameter is required" });
 
     const users = await prisma.user.findMany({
       where: {
@@ -227,7 +226,7 @@ exports.searchUsers = async (req, res) => {
         ],
       },
       select: { id: true, username: true, profilePicture: true },
-      take: 10, 
+      take: 10,
     });
 
     res.json(users);

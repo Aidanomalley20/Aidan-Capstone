@@ -16,9 +16,7 @@ const NotificationsPage = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchNotifications()).then((res) => {
-      console.log("📩 Notifications Received:", res.payload);
-    });
+    dispatch(fetchNotifications()).then((res) => {});
   }, [dispatch]);
 
   const notificationsArray = Array.isArray(notifications) ? notifications : [];

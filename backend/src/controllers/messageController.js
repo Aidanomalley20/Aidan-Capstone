@@ -96,8 +96,6 @@ exports.getConversation = async (req, res) => {
       return res.status(400).json({ error: "Invalid user ID" });
     }
 
-    console.log(`🔍 Fetching messages between ${userId} and ${otherUserId}`);
-
     const messages = await prisma.message.findMany({
       where: {
         OR: [
@@ -135,8 +133,6 @@ exports.searchUsers = async (req, res) => {
       },
       take: 10,
     });
-
-    console.log("🔍 Backend Search Response:", users);
 
     res.json(users);
   } catch (error) {

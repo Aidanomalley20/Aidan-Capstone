@@ -16,7 +16,6 @@ const MessagesPage = () => {
     if (otherUserId) {
       const numericOtherUserId = Number(otherUserId);
       if (!isNaN(numericOtherUserId)) {
-        console.log(`🔍 Fetching chat with user: ${numericOtherUserId}`);
         dispatch(fetchConversation(numericOtherUserId));
       } else {
         console.error("❌ Invalid otherUserId:", otherUserId);

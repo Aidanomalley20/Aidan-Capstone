@@ -18,7 +18,6 @@ export const fetchConversations = createAsyncThunk(
       const token = getAuthToken(getState);
       if (!token) return rejectWithValue("No token available");
 
-      console.log("🔍 Fetching conversations with token:", token);
       const response = await axios.get(`${API_URL}/messages`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -40,12 +39,10 @@ export const fetchConversation = createAsyncThunk(
       const token = getAuthToken(getState);
       if (!token) throw new Error("No token found");
 
-      console.log(`🔍 Fetching conversation with user ${otherUserId}...`);
       const response = await axios.get(`${API_URL}/messages/${otherUserId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("✅ Conversation fetched successfully:", response.data);
       return response.data;
     } catch (error) {
       console.error("❌ Error fetching conversation:", error);

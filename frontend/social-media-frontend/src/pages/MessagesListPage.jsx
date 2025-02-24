@@ -21,7 +21,7 @@ const MessagesListPage = () => {
       }
 
       try {
-        console.log("🔍 Fetching conversations...");
+        
         const response = await axios.get("/api/messages", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -42,7 +42,7 @@ const MessagesListPage = () => {
 
     setLoading(true);
     setError(null);
-    console.log("Searching for:", searchQuery);
+    
 
     try {
       const token = sessionStorage.getItem("token");

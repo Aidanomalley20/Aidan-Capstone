@@ -10,7 +10,6 @@ export const loginUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await apiLogin(userData);
-      console.log("✅ Login API Response:", response);
 
       if (!response || !response.token) {
         console.error("❌ Invalid response from server:", response);
@@ -33,7 +32,7 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await apiRegister(userData);
-      console.log("✅ Registration API Response:", response);
+
       return response;
     } catch (error) {
       console.error(

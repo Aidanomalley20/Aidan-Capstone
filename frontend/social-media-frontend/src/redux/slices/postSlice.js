@@ -54,8 +54,6 @@ const postSlice = createSlice({
         state.items = state.items.filter((post) => post.id !== action.payload);
       })
       .addCase(toggleLike.fulfilled, (state, action) => {
-        console.log("✅ Like API Response:", action.payload);
-
         state.items = state.items.map((post) =>
           post.id === action.payload.id
             ? {
@@ -65,8 +63,6 @@ const postSlice = createSlice({
               }
             : post
         );
-
-        console.log("🔥 Updated Redux State:", state.items);
       });
   },
 });

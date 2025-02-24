@@ -39,9 +39,8 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Submitting registration form:", formData);
       const response = await registerUser(formData);
-      console.log("Registration successful:", response);
+
       setMessage("Registration successful! Redirecting to login...");
       setTimeout(() => navigate("/login"), 2000);
     } catch (error) {

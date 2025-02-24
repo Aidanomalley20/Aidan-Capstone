@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../redux/slices/authSlice";
-import { updateProfile } from "../services/authService";
+
 import api from "../services/api";
 
 const SettingsPage = () => {
@@ -73,8 +73,6 @@ const SettingsPage = () => {
     }
 
     try {
-      const response = await updateProfile(formDataToSend);
-      console.log("✅ Profile Update Response:", response);
       setMessage("Profile updated successfully!");
     } catch (error) {
       console.error("❌ Failed to update profile:", error);

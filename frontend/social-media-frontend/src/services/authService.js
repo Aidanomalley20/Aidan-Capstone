@@ -2,9 +2,8 @@ import api from "./api";
 
 export const registerUser = async (userData) => {
   try {
-    console.log("Attempting to register user:", userData);
     const response = await api.post("/auth/register", userData);
-    console.log("Registration API Response:", response.data);
+
     return response.data;
   } catch (error) {
     console.error(
@@ -37,8 +36,6 @@ export const logoutUser = async () => {
       }
     );
 
-    console.log("Logout response:", response.data);
-
     sessionStorage.setItem("token", response.data.token);
     sessionStorage.setItem("user", JSON.stringify(response.data.user));
 
@@ -58,7 +55,10 @@ export const updateProfile = async (userData) => {
 
     return response.data;
   } catch (error) {
-    console.error("Profile update failed:", error.response?.data || error.message);
+    console.error(
+      "Profile update failed:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };

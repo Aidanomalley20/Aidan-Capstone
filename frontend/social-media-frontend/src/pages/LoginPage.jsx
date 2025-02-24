@@ -19,13 +19,10 @@ const LoginPage = () => {
     const result = await dispatch(loginUser(formData));
 
     if (result.meta.requestStatus === "fulfilled" && result.payload) {
-      console.log("Login successful:", result.payload);
-
       localStorage.setItem("token", result.payload.token || "");
 
       if (result.payload.user) {
         localStorage.setItem("user", JSON.stringify(result.payload.user));
-        console.log("Stored user in localStorage:", result.payload.user);
       } else {
         console.error("No user data returned from API.");
       }
