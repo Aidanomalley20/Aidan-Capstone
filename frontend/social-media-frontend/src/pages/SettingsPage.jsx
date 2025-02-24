@@ -138,13 +138,13 @@ const SettingsPage = () => {
 
   return (
     <div className="min-h-screen  text-black px-8 py-6">
-      <h1 className="text-5xl font-extrabold mb-8 text-indigo-600">
+      <h1 className="text-5xl font-extrabold mb-8 text-white">
         ⚙️ Settings
       </h1>
 
       <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-300">
         <h2 className="text-2xl font-extrabold mb-4 text-black">
-          👤 Personal Info
+           Personal Info
         </h2>
         <p className="text-lg">
           <strong className="text-indigo-500">Username:</strong> {user.username}

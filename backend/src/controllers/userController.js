@@ -137,7 +137,7 @@ exports.getFollowing = async (req, res) => {
 };
 exports.searchUsers = async (req, res) => {
   try {
-    const query = req.query.query;
+    const { query } = req.query;
     if (!query) {
       return res.status(400).json({ error: "Search query is required." });
     }
@@ -150,12 +150,18 @@ exports.searchUsers = async (req, res) => {
           { lastName: { contains: query, mode: "insensitive" } },
         ],
       },
-      select: { id: true, username: true, profilePicture: true },
+      select: {
+        id: true,
+        username: true,
+        firstName: true, 
+        lastName: true, 
+        profilePicture: true,
+      },
     });
 
     res.json(users);
   } catch (error) {
-    console.error("Error searching users:", error);
-    res.status(500).json({ error: "Failed to search users" });
+    console.error("❌ Search error:", error);
+    res.status(500).json({ error: "Server error during search" });
   }
 };
