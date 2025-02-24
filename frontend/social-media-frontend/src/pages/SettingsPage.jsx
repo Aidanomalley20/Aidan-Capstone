@@ -60,10 +60,17 @@ const SettingsPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("❌ No token found");
+      return;
+    }
+
     const formDataToSend = new FormData();
     formDataToSend.append("username", formData.username);
     formDataToSend.append("email", formData.email);
     formDataToSend.append("bio", formData.bio);
+
     if (formData.profilePic) {
       formDataToSend.append("profilePicture", formData.profilePic);
     }
@@ -73,7 +80,15 @@ const SettingsPage = () => {
     }
 
     try {
+      const response = await api.put("/auth/update", formDataToSend, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       setMessage("Profile updated successfully!");
+      setUser(response.data.updatedUser);
     } catch (error) {
       console.error("❌ Failed to update profile:", error);
       setMessage("Failed to update profile.");

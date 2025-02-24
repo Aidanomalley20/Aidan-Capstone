@@ -143,7 +143,6 @@ exports.updateProfile = async (req, res) => {
     const userId = req.user.id;
 
     const updateData = {};
-
     if (username) updateData.username = username;
     if (email) updateData.email = email;
     if (bio) updateData.bio = bio;
@@ -170,6 +169,7 @@ exports.updateProfile = async (req, res) => {
     res.status(500).json({ message: "Failed to update profile" });
   }
 };
+
 exports.getUserById = async (req, res) => {
   const { userId } = req.params;
 
