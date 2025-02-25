@@ -46,6 +46,7 @@ exports.getConversations = async (req, res) => {
             username: true,
             profilePicture: true,
             firstName: true,
+            lastName: true,
           },
         },
         receiver: {
@@ -54,6 +55,7 @@ exports.getConversations = async (req, res) => {
             username: true,
             profilePicture: true,
             firstName: true,
+            lastName: true,
           },
         },
       },
@@ -69,11 +71,12 @@ exports.getConversations = async (req, res) => {
         conversationSet.add(otherUser.id);
         conversations.push({
           id: otherUser.id,
-          username: otherUser.username,
+          username: otherUser.username || "Unknown",
           profilePicture: otherUser.profilePicture
             ? `http://localhost:5000${otherUser.profilePicture}`
             : null,
-          firstName: otherUser.firstName,
+          firstName: otherUser.firstName || "No First Name",
+          lastName: otherUser.lastName || "No Last Name",
         });
       }
     });
@@ -104,6 +107,26 @@ exports.getConversation = async (req, res) => {
         ],
       },
       orderBy: { createdAt: "asc" },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            username: true,
+            profilePicture: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        receiver: {
+          select: {
+            id: true,
+            username: true,
+            profilePicture: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     });
 
     res.json(messages);
