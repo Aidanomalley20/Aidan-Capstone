@@ -26,7 +26,7 @@ exports.getPosts = async (req, res) => {
   try {
     const posts = await prisma.post.findMany({
       include: {
-        user: { select: { id: true, username: true, profilePicture: true } }, // ✅ FIXED
+        user: { select: { id: true, username: true, profilePicture: true } }, 
         comments: {
           include: { user: { select: { id: true, username: true } } },
         },
@@ -80,7 +80,7 @@ exports.getPostById = async (req, res) => {
     const post = await prisma.post.findUnique({
       where: { id: Number(postId) },
       include: {
-        user: { select: { id: true, username: true, profilePicture: true } }, // ✅ FIXED
+        user: { select: { id: true, username: true, profilePicture: true } }, 
         comments: {
           include: {
             user: { select: { id: true, username: true } },

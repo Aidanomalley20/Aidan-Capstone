@@ -52,7 +52,6 @@ const MessagesPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center p-4">
-      {/* Header with back button and user info */}
       <div className="bg-white shadow-md rounded-lg p-4 w-full max-w-lg flex items-center justify-between mb-4">
         <Link to="/messages" className="text-blue-500 font-semibold">
           &larr; Back
@@ -80,7 +79,6 @@ const MessagesPage = () => {
         )}
       </div>
 
-      {/* Messages container (smaller size) */}
       <div className="flex-grow overflow-y-auto bg-white p-4 w-full max-w-lg rounded-lg shadow-md h-96">
         {loading ? (
           <p className="text-center text-gray-500">Loading messages...</p>
@@ -116,7 +114,6 @@ const MessagesPage = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Message input */}
       <div className="flex items-center w-full max-w-lg mt-4 bg-white p-2 rounded-lg shadow-md">
         <input
           type="text"

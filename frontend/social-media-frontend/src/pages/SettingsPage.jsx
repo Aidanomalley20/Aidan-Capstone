@@ -83,7 +83,7 @@ const SettingsPage = () => {
       const response = await fetch("http://localhost:5000/api/auth/update", {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${token}`, // DO NOT set Content-Type for FormData
+          Authorization: `Bearer ${token}`, 
         },
         body: formDataToSend,
       });
@@ -93,7 +93,7 @@ const SettingsPage = () => {
       if (response.ok) {
         console.log("Profile updated:", data);
         setMessage("Profile updated successfully!");
-        setUser(data.updatedUser); // Update local user state
+        setUser(data.updatedUser); 
       } else {
         console.error("Update failed:", data);
         setMessage("Failed to update profile.");

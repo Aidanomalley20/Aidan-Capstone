@@ -12,16 +12,12 @@ const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
 
-// Fix: Use correct absolute path for the uploads directory
 const uploadsPath = path.join(__dirname, "../uploads");
 
-// Ensure uploads directory exists
 if (!fs.existsSync(uploadsPath)) {
   fs.mkdirSync(uploadsPath, { recursive: true });
-  console.log("📂 Created 'uploads' directory.");
 }
 
-console.log("🛠️ Serving static files from:", uploadsPath);
 app.use("/uploads", express.static(uploadsPath));
 
 app.use(cors());
