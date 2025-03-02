@@ -150,10 +150,23 @@ exports.searchUsers = async (req, res) => {
           { lastName: { contains: query, mode: "insensitive" } },
         ],
       },
-      select: { id: true, username: true, profilePicture: true },
+      select: {
+        id: true,
+        username: true,
+        firstName: true,
+        lastName: true,
+        profilePicture: true,
+      },
     });
 
-    res.json(users);
+    const formattedUsers = users.map((user) => ({
+      ...user,
+      profilePicture: user.profilePicture
+        ? `/uploads/${user.profilePicture.replace("uploads/", "")}`
+        : null,
+    }));
+
+    res.json(formattedUsers);
   } catch (error) {
     console.error("Error searching users:", error);
     res.status(500).json({ error: "Failed to search users" });

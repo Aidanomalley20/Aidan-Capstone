@@ -26,13 +26,10 @@ const PostCard = ({ post }) => {
     useSelector((state) => state.posts.items.find((p) => p.id === post.id)) ||
     post;
 
-  
-
   const handleLike = () => {
     setLiked(!liked);
     setLikeCount(liked ? likeCount - 1 : likeCount + 1);
     dispatch(toggleLike(post.id));
-    
   };
 
   const handleDelete = () => {
@@ -65,11 +62,22 @@ const PostCard = ({ post }) => {
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center space-x-3">
           <div
-            className="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center text-lg font-bold cursor-pointer"
+            className="w-10 h-10 rounded-full overflow-hidden border border-gray-300 cursor-pointer"
             onClick={() => navigate(`/profile/${post.user.id}`)}
           >
-            {post.user.username ? post.user.username[0] : "U"}
+            {post.user.profilePicture ? (
+              <img
+                src={`http://localhost:5000${post.user.profilePicture}`}
+                alt="User Profile"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-400 flex items-center justify-center text-lg font-bold">
+                {post.user.username ? post.user.username[0] : "U"}
+              </div>
+            )}
           </div>
+
           <p
             className="text-lg font-semibold cursor-pointer hover:underline"
             onClick={() => navigate(`/profile/${post.user.id}`)}

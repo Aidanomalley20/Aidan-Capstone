@@ -39,19 +39,19 @@ const SearchPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center text-white px-4 py-6">
-      <h1 className="text-3xl font-bold mb-4">Search Users</h1>
+      <h1 className="text-3xl font-bold mb-6"> Search Users</h1>
 
-      <form onSubmit={handleSearch} className="w-full max-w-md">
+      <form onSubmit={handleSearch} className="w-full max-w-md flex space-x-2">
         <input
           type="text"
-          className="w-full p-2 rounded bg-gray-800 border border-gray-600 text-white"
+          className="w-full p-3 rounded bg-gray-800 border border-gray-600 text-white focus:ring focus:ring-indigo-500"
           placeholder="Search for users..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
         <button
           type="submit"
-          className="w-full mt-2 p-2 bg-indigo-500 hover:bg-indigo-600 rounded text-white"
+          className="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 rounded text-white font-semibold transition"
         >
           Search
         </button>
@@ -60,23 +60,45 @@ const SearchPage = () => {
       {loading && <p className="mt-4 text-gray-400">Searching...</p>}
       {error && <p className="mt-4 text-red-500">{error}</p>}
 
-      <ul className="mt-4 w-full max-w-md">
+      <div className="mt-6 w-full max-w-md">
         {results.length > 0 ? (
-          results.map((user) => (
-            <li
-              key={user.id}
-              className="border-b border-gray-600 py-2 cursor-pointer hover:text-indigo-400"
-              onClick={() => navigate(`/profile/${user.id}`)}
-            >
-              @{user.username} - {user.firstName} {user.lastName}
-            </li>
-          ))
+          <div className="grid grid-cols-1 gap-4">
+            {results.map((user) => (
+              <div
+                key={user.id}
+                className="flex items-center p-4 bg-gray-900 rounded-lg shadow-md border border-gray-700 cursor-pointer hover:bg-gray-800 transition"
+                onClick={() => navigate(`/profile/${user.id}`)}
+              >
+                <div className="w-16 h-16 rounded-full overflow-hidden border border-gray-500">
+                  {user.profilePicture ? (
+                    <img
+                      src={`http://localhost:5000${user.profilePicture}`}
+                      alt="User Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-500 flex items-center justify-center text-xl font-bold">
+                      {user.username[0]}
+                    </div>
+                  )}
+                </div>
+                <div className="ml-4">
+                  <h2 className="text-lg font-bold text-indigo-400">
+                    @{user.username}
+                  </h2>
+                  <p className="text-gray-300">
+                    {user.firstName} {user.lastName}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         ) : (
-          <p className="mt-4 text-gray-400">
+          <p className="mt-6 text-gray-400">
             {query && !loading ? "No users found." : ""}
           </p>
         )}
-      </ul>
+      </div>
     </div>
   );
 };

@@ -36,7 +36,13 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex flex-col items-center justify-center">
+      <h1
+        className="text-8xl font-light bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 bg-clip-text text-transparent tracking-wide mb-8"
+        style={{ fontFamily: "'Poppins', sans-serif" }}
+      >
+        Flow
+      </h1>
       <div className="backdrop-blur-2xl bg-black/20 border border-gray-400/70 p-8 rounded-xl shadow-xl w-full max-w-md">
         <h1 className="text-3xl font-extrabold text-center text-white mb-8">
           Login

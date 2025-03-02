@@ -21,7 +21,6 @@ const MessagesListPage = () => {
       }
 
       try {
-        
         const response = await axios.get("/api/messages", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -42,16 +41,8 @@ const MessagesListPage = () => {
 
     setLoading(true);
     setError(null);
-    
 
     try {
-      const token = sessionStorage.getItem("token");
-      if (!token) {
-        setError("You need to be logged in to search.");
-        setLoading(false);
-        return;
-      }
-
       const response = await axios.get(
         `/api/users/search?query=${searchQuery}`,
         {
@@ -67,6 +58,7 @@ const MessagesListPage = () => {
       setLoading(false);
     }
   };
+
   const handleDeleteConversation = async (conversationId) => {
     if (!window.confirm("Are you sure you want to delete this conversation?")) {
       return;
@@ -87,112 +79,93 @@ const MessagesListPage = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 bg-gray-100">
-      <h2 className="text-2xl font-bold mb-4">Messages</h2>
+    <div className="min-h-screen flex flex-col items-center text-white px-4 py-6">
+      <h1 className="text-3xl font-bold mb-6">📩 Messages</h1>
 
-      <form onSubmit={handleSearch} className="mb-4">
+      <form onSubmit={handleSearch} className="w-full max-w-md flex space-x-2">
         <input
           type="text"
+          className="w-full p-3 rounded bg-gray-800 border border-gray-600 text-white focus:ring focus:ring-indigo-500"
           placeholder="Search for users..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="border p-2 rounded-lg w-full"
         />
         <button
           type="submit"
-          className="mt-2 bg-blue-500 text-white p-2 rounded-lg w-full"
+          className="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 rounded text-white font-semibold transition"
         >
           Search
         </button>
       </form>
 
-      {loading && <p>Searching...</p>}
-      {error && <p className="text-red-500">{error}</p>}
+      {loading && <p className="mt-4 text-gray-400">Searching...</p>}
+      {error && <p className="mt-4 text-red-500">{error}</p>}
 
-      {loading && <p>Searching...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-
-      {loading && <p>Searching...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-
-      {loading && <p>Searching...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-
-      {searchResults.length > 0 && (
-        <div className="bg-white p-4 rounded-lg shadow-md mb-4">
-          <h3 className="text-lg font-semibold mb-2">Search Results</h3>
-          {searchResults.map((user) => (
-            <div
-              key={user.id}
-              className="flex items-center justify-between p-3 border-b hover:bg-gray-200"
-            >
-              <Link
-                to={`/messages/${user.id}`}
-                className="flex items-center w-full"
+      <div className="mt-6 w-full max-w-md">
+        {searchResults.length > 0 && (
+          <div className="grid grid-cols-1 gap-4">
+            {searchResults.map((user) => (
+              <div
+                key={user.id}
+                className="flex items-center p-4 bg-gray-900 rounded-lg shadow-md border border-gray-700 cursor-pointer hover:bg-gray-800 transition"
+                onClick={() => navigate(`/messages/${user.id}`)}
               >
-                {user.profilePicture ? (
-                  <img
-                    src={`http://localhost:5000${user.profilePicture}`}
-                    onError={(e) => {
-                      console.error("❌ Image failed to load:", e.target.src);
-                      e.target.src = "/default-avatar.png";
-                    }}
-                    alt={user.username}
-                    className="w-10 h-10 rounded-full object-cover mr-3"
-                  />
-                ) : (
-                  <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-700 font-bold rounded-full">
-                    {user.firstName
-                      ? user.firstName[0].toUpperCase()
-                      : user.username
-                      ? user.username[0].toUpperCase()
-                      : "?"}
-                  </div>
-                )}
+                <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-500">
+                  {user.profilePicture ? (
+                    <img
+                      src={`http://localhost:5000${user.profilePicture}`}
+                      alt="User Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-500 flex items-center justify-center text-xl font-bold">
+                      {user.username[0]}
+                    </div>
+                  )}
+                </div>
+                <div className="ml-4">
+                  <h2 className="text-lg font-bold text-indigo-400">
+                    @{user.username}
+                  </h2>
+                  <p className="text-gray-300">{user.firstName}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-                <p className="text-lg">@{user.username}</p>
-              </Link>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div className="bg-white p-4 rounded-lg shadow-md">
-        <h3 className="text-lg font-semibold mb-2">Your Conversations</h3>
+        <h3 className="text-xl font-bold mt-6">💬 Your Conversations</h3>
         {conversations.length === 0 ? (
-          <p>No conversations yet.</p>
+          <p className="text-gray-400">No conversations yet.</p>
         ) : (
           conversations.map((conv) => (
             <div
               key={conv.id}
-              className="flex items-center justify-between p-3 border-b hover:bg-gray-200"
+              className="flex items-center p-4 bg-gray-900 rounded-lg shadow-md border border-gray-700 cursor-pointer hover:bg-gray-800 transition"
+              onClick={() => navigate(`/messages/${conv.id}`)}
             >
-              <Link
-                to={`/messages/${conv.id}`}
-                className="flex items-center w-full"
-              >
+              <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-500">
                 {conv.profilePicture ? (
                   <img
                     src={conv.profilePicture}
-                    onError={(e) => {
-                      console.error("❌ Image failed to load:", e.target.src);
-                      e.target.src = "/default-avatar.png";
-                    }}
-                    alt={conv.username}
-                    className="w-10 h-10 rounded-full object-cover mr-3"
+                    alt="User Profile"
+                    className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-700 font-bold rounded-full">
-                    {conv.firstName ? conv.firstName[0].toUpperCase() : "?"}
+                  <div className="w-full h-full bg-gray-500 flex items-center justify-center text-xl font-bold">
+                    {conv.username[0]}
                   </div>
                 )}
-
-                <p className="text-lg">@{conv.username}</p>
-              </Link>
-
+              </div>
+              <div className="ml-4 flex-1">
+                <h2 className="text-lg font-bold text-indigo-400">
+                  @{conv.username}
+                </h2>
+                <p className="text-gray-300">{conv.firstName}</p>
+              </div>
               <button
                 onClick={() => handleDeleteConversation(conv.id)}
-                className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-700"
+                className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition"
               >
                 Delete
               </button>

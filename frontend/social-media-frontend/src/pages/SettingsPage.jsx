@@ -60,10 +60,17 @@ const SettingsPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Not authenticated");
+      return;
+    }
+
     const formDataToSend = new FormData();
     formDataToSend.append("username", formData.username);
     formDataToSend.append("email", formData.email);
     formDataToSend.append("bio", formData.bio);
+
     if (formData.profilePic) {
       formDataToSend.append("profilePicture", formData.profilePic);
     }
@@ -73,7 +80,24 @@ const SettingsPage = () => {
     }
 
     try {
-      setMessage("Profile updated successfully!");
+      const response = await fetch("http://localhost:5000/api/auth/update", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`, // DO NOT set Content-Type for FormData
+        },
+        body: formDataToSend,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Profile updated:", data);
+        setMessage("Profile updated successfully!");
+        setUser(data.updatedUser); // Update local user state
+      } else {
+        console.error("Update failed:", data);
+        setMessage("Failed to update profile.");
+      }
     } catch (error) {
       console.error("❌ Failed to update profile:", error);
       setMessage("Failed to update profile.");
