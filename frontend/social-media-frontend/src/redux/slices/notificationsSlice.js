@@ -7,7 +7,7 @@ const initialState = {
   loading: false,
   error: null,
 };
-
+const API_URL = import.meta.env.VITE_API_URL || "https://aidan-capstone.onrender.com/api";
 export const fetchNotifications = createAsyncThunk(
   "notifications/fetchNotifications",
   async (_, { rejectWithValue, getState }) => {
@@ -16,7 +16,7 @@ export const fetchNotifications = createAsyncThunk(
         auth: { token },
       } = getState();
 
-      const response = await axios.get("/api/notifications", {
+      const response = await axios.get(`${API_URL}/notifications`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -41,7 +41,7 @@ export const markNotificationRead = createAsyncThunk(
         auth: { token },
       } = getState();
       const response = await axios.patch(
-        `/api/notifications/${id}`,
+        `${API_URL}/notifications/${id}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

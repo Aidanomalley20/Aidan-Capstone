@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
-
+const API_URL = import.meta.env.VITE_API_URL || "https://aidan-capstone.onrender.com/api";
 const MessagesListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -21,7 +21,7 @@ const MessagesListPage = () => {
       }
 
       try {
-        const response = await axios.get("/api/messages", {
+        const response = await axios.get(`${API_URL}/messages`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -65,7 +65,7 @@ const MessagesListPage = () => {
     }
 
     try {
-      await axios.delete(`/api/messages/${conversationId}`, {
+      await axios.delete(`${API_URL}/messages/${conversationId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -108,7 +108,7 @@ const MessagesListPage = () => {
               <div
                 key={user.id}
                 className="flex items-center p-4 bg-gray-900 rounded-lg shadow-md border border-gray-700 cursor-pointer hover:bg-gray-800 transition"
-                onClick={() => navigate(`/messages/${user.id}`)}
+                onClick={() => navigate(`${API_URL}/messages/${user.id}`)}
               >
                 <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-500">
                   {user.profilePicture ? (
@@ -142,7 +142,7 @@ const MessagesListPage = () => {
             <div
               key={conv.id}
               className="flex items-center p-4 bg-gray-900 rounded-lg shadow-md border border-gray-700 cursor-pointer hover:bg-gray-800 transition"
-              onClick={() => navigate(`/messages/${conv.id}`)}
+              onClick={() => navigate(`${API_URL}/messages/${conv.id}`)}
             >
               <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-500">
                 {conv.profilePicture ? (
