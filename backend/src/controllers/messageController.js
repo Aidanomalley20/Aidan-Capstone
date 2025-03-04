@@ -71,7 +71,7 @@ exports.getConversations = async (req, res) => {
           id: otherUser.id,
           username: otherUser.username,
           profilePicture: otherUser.profilePicture
-            ? `http://localhost:5000${otherUser.profilePicture}`
+            ? `https://aidan-capstone.onrender.com${otherUser.profilePicture}`
             : null,
           firstName: otherUser.firstName,
         });

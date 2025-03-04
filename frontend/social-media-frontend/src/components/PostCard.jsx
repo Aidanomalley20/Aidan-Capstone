@@ -67,7 +67,7 @@ const PostCard = ({ post }) => {
           >
             {post.user.profilePicture ? (
               <img
-                src={`http://localhost:5000${post.user.profilePicture}`}
+                src={`https://aidan-capstone.onrender.com${post.user.profilePicture}`}
                 alt="User Profile"
                 className="w-full h-full object-cover"
               />
@@ -115,7 +115,7 @@ const PostCard = ({ post }) => {
           onClick={() => navigate(`/post/${post.id}`)}
         >
           <img
-            src={`http://localhost:5000${post.image}`}
+            src={`https://aidan-capstone.onrender.com${post.image}`}
             alt="Post"
             className="w-full h-full object-contain"
           />

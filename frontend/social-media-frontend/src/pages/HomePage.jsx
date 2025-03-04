@@ -28,7 +28,7 @@ const HomePage = () => {
                 onClick={() => navigate(`/post/${post.id}`)}
               >
                 <img
-                  src={`http://localhost:5000${post.image}`}
+                  src={`https://aidan-capstone.onrender.com${post.image}`}
                   alt="Post"
                   className="w-full h-64 object-cover rounded-lg hover:opacity-80 transition duration-300"
                   onError={(e) => {

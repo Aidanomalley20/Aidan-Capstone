@@ -80,7 +80,7 @@ const SettingsPage = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/update", {
+      const response = await fetch("https://aidan-capstone.onrender.com/api/auth/update", {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`, 

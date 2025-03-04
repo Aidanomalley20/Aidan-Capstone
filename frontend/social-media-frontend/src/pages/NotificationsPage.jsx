@@ -56,7 +56,7 @@ const NotificationsPage = () => {
 
               {notification.sender?.profilePicture ? (
                 <img
-                  src={`http://localhost:5000${notification.sender.profilePicture}`}
+                  src={`https://aidan-capstone.onrender.com${notification.sender.profilePicture}`}
                   onError={(e) => {
                     console.error("❌ Image failed to load:", e.target.src);
                     e.target.src = "/default-avatar.png";

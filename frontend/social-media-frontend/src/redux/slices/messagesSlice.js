@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_API_URL || "https://aidan-capstone.onrender.com/api";
 
 const getAuthToken = (getState) => {
   let token = getState().auth?.token || sessionStorage.getItem("token");

@@ -60,7 +60,7 @@ const MessagesPage = () => {
           <div className="flex items-center">
             {otherUser.profilePicture ? (
               <img
-                src={`http://localhost:5000${otherUser.profilePicture}`}
+                src={`https://aidan-capstone.onrender.com${otherUser.profilePicture}`}
                 onError={(e) => (e.target.src = "/default-avatar.png")}
                 alt={otherUser.username}
                 className="w-10 h-10 rounded-full object-cover mr-3"

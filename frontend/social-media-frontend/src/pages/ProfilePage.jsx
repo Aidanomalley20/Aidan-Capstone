@@ -61,7 +61,7 @@ const ProfilePage = () => {
           <div className="w-28 h-28 bg-gray-300 rounded-full overflow-hidden border-2 border-white shadow-md">
             {user.profilePicture ? (
               <img
-                src={`http://localhost:5000${user.profilePicture}`}
+                src={`https://aidan-capstone.onrender.com${user.profilePicture}`}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
@@ -131,7 +131,7 @@ const ProfilePage = () => {
             >
               {post.image && (
                 <img
-                  src={`http://localhost:5000${post.image}`}
+                  src={`https://aidan-capstone.onrender.com${post.image}`}
                   alt="Post"
                   className="w-full h-full object-cover"
                 />

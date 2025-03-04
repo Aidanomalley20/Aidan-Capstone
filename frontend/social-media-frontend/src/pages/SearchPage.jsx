@@ -72,7 +72,7 @@ const SearchPage = () => {
                 <div className="w-16 h-16 rounded-full overflow-hidden border border-gray-500">
                   {user.profilePicture ? (
                     <img
-                      src={`http://localhost:5000${user.profilePicture}`}
+                      src={`https://aidan-capstone.onrender.com${user.profilePicture}`}
                       alt="User Profile"
                       className="w-full h-full object-cover"
                     />
