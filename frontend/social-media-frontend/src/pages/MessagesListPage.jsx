@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
-const API_URL = import.meta.env.VITE_API_URL || "https://aidan-capstone.onrender.com/api";
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://aidan-capstone.onrender.com/api";
 const MessagesListPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -44,16 +45,17 @@ const MessagesListPage = () => {
 
     try {
       const response = await axios.get(
-        `/api/users/search?query=${searchQuery}`,
+        `${API_URL}/users/search?query=${searchQuery}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      setSearchResults(response.data);
+      setSearchResults(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.error("Search error:", err);
       setError("Failed to fetch search results.");
+      setSearchResults([]); // ✅ Prevents .map() crash
     } finally {
       setLoading(false);
     }
@@ -108,7 +110,7 @@ const MessagesListPage = () => {
               <div
                 key={user.id}
                 className="flex items-center p-4 bg-gray-900 rounded-lg shadow-md border border-gray-700 cursor-pointer hover:bg-gray-800 transition"
-                onClick={() => navigate(`${API_URL}/messages/${user.id}`)}
+                onClick={() => navigate(`/messages/${user.id}`)}
               >
                 <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-500">
                   {user.profilePicture ? (
@@ -142,7 +144,7 @@ const MessagesListPage = () => {
             <div
               key={conv.id}
               className="flex items-center p-4 bg-gray-900 rounded-lg shadow-md border border-gray-700 cursor-pointer hover:bg-gray-800 transition"
-              onClick={() => navigate(`${API_URL}/messages/${conv.id}`)}
+              onClick={() => navigate(`/messages/${conv.id}`)}
             >
               <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-500">
                 {conv.profilePicture ? (

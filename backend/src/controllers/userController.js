@@ -137,38 +137,28 @@ exports.getFollowing = async (req, res) => {
 };
 exports.searchUsers = async (req, res) => {
   try {
-    const query = req.query.query;
-    if (!query) {
-      return res.status(400).json({ error: "Search query is required." });
-    }
+    const { query } = req.query;
+    if (!query) return res.status(400).json({ error: "Query required" });
 
     const users = await prisma.user.findMany({
       where: {
         OR: [
           { username: { contains: query, mode: "insensitive" } },
-          { firstName: { contains: query, mode: "insensitive" } },
-          { lastName: { contains: query, mode: "insensitive" } },
+          { email: { contains: query, mode: "insensitive" } },
         ],
       },
       select: {
         id: true,
         username: true,
-        firstName: true,
-        lastName: true,
         profilePicture: true,
+        firstName: true,
       },
+      take: 10,
     });
 
-    const formattedUsers = users.map((user) => ({
-      ...user,
-      profilePicture: user.profilePicture
-        ? `/uploads/${user.profilePicture.replace("uploads/", "")}`
-        : null,
-    }));
-
-    res.json(formattedUsers);
+    res.json(users);
   } catch (error) {
-    console.error("Error searching users:", error);
+    console.error("❌ Error searching users:", error);
     res.status(500).json({ error: "Failed to search users" });
   }
 };

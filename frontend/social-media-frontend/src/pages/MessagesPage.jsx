@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchConversation, sendMessage } from "../redux/slices/messagesSlice";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-
+const API_URL =
+  import.meta.env.VITE_API_URL || "https://aidan-capstone.onrender.com/api";
 const MessagesPage = () => {
   const { otherUserId } = useParams();
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ const MessagesPage = () => {
 
   const fetchOtherUser = async (userId) => {
     try {
-      const response = await axios.get(`/api/users/${userId}`, {
+      const response = await axios.get(`${API_URL}/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setOtherUser(response.data);
